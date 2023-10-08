@@ -1,1 +1,2 @@
-# nextjs-whatsapp-clone-starter
+## ENCY
+# Next.js, Socket.io, Tailwind CSS, Node.js & Zegocloud
