@@ -1,27 +1,62 @@
 import Image from "next/image.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import ContextMenu from "./ContextMenu.jsx";
+import PhotoPicker from "./PhotoPicker.jsx";
 
 function Avatar({type, image, setImage}) {
 
   const [hover, setHover] = useState(false)
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false)
   const [contextMenuCordinates , setContextMenuCordinates] = useState({x:0,y:0})
+  const [grabPhoto  , setGrabPhoto  ] = useState(false)
 
   const showContextMenu = (e) =>{
     e.preventDefault();
     setContextMenuCordinates({x:e.pageX, y:e.pageY})
     setIsContextMenuVisible(true)
   }
-//1:44:24
+
+
+  useEffect(() => {
+    if(grabPhoto){
+      const data = document.getElementById("photo-picker")
+      data.click();
+      document.body.onfocus = (e) =>  {
+        setTimeout(() => {
+          setGrabPhoto(false)
+        },1000)
+      }
+    }
+  },[grabPhoto])
+
+
 
   const contextMenuOptions = [
     {name:"Take Photo", callback: ()=> {}},
     {name:"Choose From Library", callback: ()=> {}},
-    {name:"Upload Photo", callback: ()=> {}},
-    {name:"Remove Photo", callback: ()=> {}}
+    {name:"Upload Photo", callback: ()=> {
+      setGrabPhoto(true)
+    }},
+    {name:"Remove Photo", callback: ()=> {
+      setImage("/default_avatar.png")
+    }}
   ]
+
+
+  const photoPickerChange = async (e) =>{
+    const file = e.target.files[0]
+    const reader = new FileReader()
+    const data = document.createElement("img")
+    reader.onload = function(event) {
+      data.src = event.target.result;
+      data.setAttribute("data-src", event.target.result)
+    }
+    reader.readAsDataURL(file);
+    setTimeout(() => {
+      setImage(data.src)
+    }, 100)
+  }
 
   return <>
   <div className="flex items-center justify-center">
@@ -54,8 +89,9 @@ function Avatar({type, image, setImage}) {
     }
   </div>
   {
-    isContextMenuVisible && <ContextMenu options={contextMenuOptions} cordinates={contextMenuCordinates} contextMenu={isContextMenuVisible} setContextMenu={setIsContextMenuVisible} />
+    isContextMenuVisible && (<ContextMenu options={contextMenuOptions} cordinates={contextMenuCordinates} contextMenu={isContextMenuVisible} setContextMenu={setIsContextMenuVisible} />)
   }
+  {grabPhoto && <PhotoPicker onChange={photoPickerChange} />}
   </>;
 }
 
