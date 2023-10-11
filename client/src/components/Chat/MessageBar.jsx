@@ -12,6 +12,7 @@ function MessageBar() {
 
   const sendMessage = async () =>{
     alert(message)
+    //4:18:13
   }
 
   return <div className=" bg-panel-header-background h-20 px-4 flex items-center gap-6 relative">

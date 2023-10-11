@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         "chat-background": "url('/chat-bg.png')",
+        "chat-background1": "url('/chat-bg2.webp')",
       },
       colors: {
         secondary: "#8696a0",

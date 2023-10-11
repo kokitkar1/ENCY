@@ -52,8 +52,8 @@ function login() {
 
   return <div className="flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6" >
     <div className=" flex items-center justify-center gap-2 text-white" >
-      <Image src="/whatsapp.gif" alt="Whatapp" height={300} width={300} />
-      <span className="text-7xl" >Whatsapp</span>
+      <Image src="/ezgif.gif" alt="ency" height={300} width={300} className=" rounded-full" />
+      <span className="text-7xl" >Ency</span>
     </div>
     <button className="flex items-center justify-center gap-7 bg-search-input-container-background p-5 rounded-lg" onClick={handleLogin} >
       <FcGoogle className="text-4xl" />
