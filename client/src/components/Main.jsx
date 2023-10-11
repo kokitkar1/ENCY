@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ChatList from "./Chatlist/ChatList.jsx";
 import Empty from "./Empty.jsx";
-import { onAuthStateChanged, updateCurrentUser } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/utils/FirebaseConfig.js";
 import axios from "axios";
 import { CHECK_USER_ROUTE } from "@/utils/ApiRoutes.js";
@@ -12,7 +12,7 @@ import Chat from "./Chat/Chat.jsx";
 
 function Main() {
   const router = useRouter()
-  const [{userInfo},dispatch] = useStateProvider()
+  const [{userInfo,currentChatUser},dispatch] = useStateProvider()
   const [redirectLogin, setRedirectLogin] = useState(false)
 
 
@@ -44,8 +44,9 @@ function Main() {
   return <>
     <div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
       <ChatList />
-      {/* <Empty /> */}
-      <Chat />
+      {
+        currentChatUser ? <Chat /> : <Empty />
+      }
     </div>
   </>;
 }
