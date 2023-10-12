@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatList from "./Chatlist/ChatList.jsx";
 import Empty from "./Empty.jsx";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/utils/FirebaseConfig.js";
 import axios from "axios";
-import { CHECK_USER_ROUTE, GET_MESSAGE_ROUTE } from "@/utils/ApiRoutes.js";
+import { CHECK_USER_ROUTE, GET_MESSAGE_ROUTE, HOST } from "@/utils/ApiRoutes.js";
 import { useRouter } from "next/router.js";
 import { useStateProvider } from "@/context/StateContext.jsx";
 import { reducerCases } from "@/context/constants.js";
 import Chat from "./Chat/Chat.jsx";
+import { io } from "socket.io-client";
 
 function Main() {
   const router = useRouter()
   const [{userInfo,currentChatUser},dispatch] = useStateProvider()
   const [redirectLogin, setRedirectLogin] = useState(false)
-
+  const [socketEvent, setSocketEvent] = useState(false)
+  const socket = useRef()
 
   useEffect(() => {
     if(redirectLogin) router.push("/login")
@@ -40,12 +42,29 @@ function Main() {
     }
     })
 
+    useEffect(() => {
+      if(userInfo){
+        socket.current = io(HOST);
+        socket.current.emit("add-user", userInfo.id)
+        dispatch({type: reducerCases.SET_SOCKET, socket})
+      }
+    },[userInfo])
+
+
+    useEffect(() => {
+      if(socket.current && !socketEvent ){
+        socket.current.on("msg-recieve", (data) => {
+          dispatch({type:reducerCases.ADD_MESSAGE, newMessage: { ...data.message,}})
+        })
+        setSocketEvent(true)
+      }
+    },[socket.current])
+
 
     useEffect(() => {
         const getMessages = async () => {
-          const {data} = await axios.get(`${GET_MESSAGE_ROUTE}/${userInfo.id}/${currentChatUser.id}`);
-
-          console.log({data});
+          const {data : {messages}} = await axios.get(`${GET_MESSAGE_ROUTE}/${userInfo.id}/${currentChatUser.id}`);
+          dispatch({ type : reducerCases.SET_MESSAGES, messages})
         }
         if(currentChatUser?.id){
           getMessages()
@@ -62,6 +81,7 @@ function Main() {
     </div>
   </>;
 }
+
 
 
 export default Main;
