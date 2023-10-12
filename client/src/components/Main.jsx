@@ -4,7 +4,7 @@ import Empty from "./Empty.jsx";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/utils/FirebaseConfig.js";
 import axios from "axios";
-import { CHECK_USER_ROUTE } from "@/utils/ApiRoutes.js";
+import { CHECK_USER_ROUTE, GET_MESSAGE_ROUTE } from "@/utils/ApiRoutes.js";
 import { useRouter } from "next/router.js";
 import { useStateProvider } from "@/context/StateContext.jsx";
 import { reducerCases } from "@/context/constants.js";
@@ -39,6 +39,18 @@ function Main() {
       }
     }
     })
+
+
+    useEffect(() => {
+        const getMessages = async () => {
+          const {data} = await axios.get(`${GET_MESSAGE_ROUTE}/${userInfo.id}/${currentChatUser.id}`);
+
+          console.log({data});
+        }
+        if(currentChatUser?.id){
+          getMessages()
+        }
+    },[currentChatUser])
 
 
   return <>
