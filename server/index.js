@@ -24,9 +24,9 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = new Server(server , {
     cors: {
-        origin: "http://localhost:3000",
-    }
-})
+        origin: "http://localhost:3600",
+    },
+});
 
 global.onlineUsers = new Map()
 io.on("connection", (socket) => {
@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
         if(sendUserSocket) {
             socket.io(sendUserSocket).emit("msg-recieve", {
                 from: data.from,
-                message:data,message
+                message:data.message,
             })
         }
     })

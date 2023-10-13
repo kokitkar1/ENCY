@@ -45,7 +45,7 @@ function Main() {
     useEffect(() => {
       if(userInfo){
         socket.current = io(HOST);
-        socket.current.emit("add-user", userInfo.id)
+        socket.current.emit("add-user", userInfo.id);
         dispatch({type: reducerCases.SET_SOCKET, socket})
       }
     },[userInfo])
@@ -54,7 +54,7 @@ function Main() {
     useEffect(() => {
       if(socket.current && !socketEvent ){
         socket.current.on("msg-recieve", (data) => {
-          dispatch({type:reducerCases.ADD_MESSAGE, newMessage: { ...data.message,}})
+          dispatch({type:reducerCases.ADD_MESSAGE, newMessage: { ...data.messages,}})
         })
         setSocketEvent(true)
       }
@@ -82,6 +82,6 @@ function Main() {
   </>;
 }
 
-
+//5.21.07
 
 export default Main;
